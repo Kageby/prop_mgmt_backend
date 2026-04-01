@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from google.cloud import bigquery
 
 app = FastAPI()
-
+    
 PROJECT_ID = "aesthetic-vent-489415-u9"
 DATASET = "property_mgmt"
 
