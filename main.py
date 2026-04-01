@@ -3,7 +3,7 @@ from google.cloud import bigquery
 
 app = FastAPI()
 
-PROJECT_ID = "MGMT-54"
+PROJECT_ID = "MGMT-545"
 DATASET = "property_mgmt"
 
 
