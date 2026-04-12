@@ -356,7 +356,7 @@ class ExpenseUpdate(BaseModel):
     vendor: str
     description: str
     
-@app.put("/expense/{expense_id}", status_code=200)
+@app.put("/expenses/{expense_id}", status_code=200)
 def update_expense_record(expense_id: int, expense_input: ExpenseUpdate,bq: bigquery.Client = Depends(get_bq_client)):
     """
     Update an expense record
