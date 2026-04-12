@@ -270,12 +270,12 @@ def delete_income_record(income_id: int, bq: bigquery.Client = Depends(get_bq_cl
 
 
 @app.delete("/expenses/{expense_id}", status_code=200)
-def expense_by_property_id(expense_id: int, bq: bigquery.Client = Depends(get_bq_client)):
+def delete_expense_record(expense_id: int, bq: bigquery.Client = Depends(get_bq_client)):
     """
     Delete an expense record by property ID
     """
     query = f"""
-        DELETE FROM `{PROJECT_ID}.{DATASET}.expense`
+        DELETE FROM `{PROJECT_ID}.{DATASET}.expenses`
         WHERE expense_id = {expense_id}
     """
 
@@ -362,7 +362,7 @@ def update_expense_record(expense_id: int, expense_input: ExpenseUpdate,bq: bigq
     Update an expense record
     """
     query = f"""
-        UPDATE `{PROJECT_ID}.{DATASET}.expense`
+        UPDATE `{PROJECT_ID}.{DATASET}.expenses`
         SET
             amount = @amount,
             date = @date,
