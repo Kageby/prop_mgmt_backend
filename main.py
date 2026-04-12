@@ -395,3 +395,108 @@ def update_expense_record(expense_id: int, expense_input: ExpenseUpdate,bq: bigq
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Database query failed: {str(e)}"
         )
+
+
+# Request body model
+class PropertyCreate(BaseModel):
+    name: str
+    address: str
+    city: str
+    state: str
+    postal_code: str
+    property_type: str
+    tenant_name: str
+    monthly_rent: float
+
+@app.post("/property/{property_id}", status_code=201)
+def create_property(property_id: int, property_input: PropertyCreate, bq: bigquery.Client = Depends(get_bq_client)):
+    """
+    Create a new property
+    """
+    query = f"""
+        INSERT INTO `{PROJECT_ID}.{DATASET}.property` (property_id, name, address, city, state, postal_code, property_type, tenant_name, monthly_rent) 
+        VALUES
+        ({property_id}, @name, @address, @city, @state, @postal_code, @property_type, @tenant_name, @monthly_rent) 
+    """
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[
+            bigquery.ScalarQueryParameter("property_id", "INT64", property_id),
+            bigquery.ScalarQueryParameter("name", "STRING", property_input.name),
+            bigquery.ScalarQueryParameter("address", "STRING", property_input.address),
+            bigquery.ScalarQueryParameter("city", "STRING", property_input.city),
+            bigquery.ScalarQueryParameter("state", "STRING", property_input.state),
+            bigquery.ScalarQueryParameter("postal_code", "STRING", property_input.postal_code),
+            bigquery.ScalarQueryParameter("property_type", "STRING", property_input.property_type), 
+            bigquery.ScalarQueryParameter("tenant_name", "STRING", property_input.tenant_name),
+            bigquery.ScalarQueryParameter("monthly_rent", "FLOAT64", property_input.monthly_rent)
+        ]
+    )
+
+    try:
+        results = bq.query(query, job_config=job_config).result()
+        return {
+            "message": "New property created successfully",
+            "income_id": property_id
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database query failed: {str(e)}"
+        )
+
+# Request body model
+class PropertyUpdate(BaseModel):
+    name: str
+    address: str
+    city: str
+    state: str
+    postal_code: str
+    property_type: str
+    tenant_name: str
+    monthly_rent: float
+    
+@app.put("/property/{property_id}", status_code=200)
+def update_expense_record(property_id: int, property_input: PropertyUpdate,bq: bigquery.Client = Depends(get_bq_client)):
+    """
+    Update the property information
+    """
+    query = f"""
+        UPDATE `{PROJECT_ID}.{DATASET}.property`
+        SET
+            name = @name,
+            address = @address,
+            city = @city,
+            state = @state,
+            postal_code = @postal_code,
+            property_type = @property_type,
+            tenant_name = @tenant_name,
+            monthly_rent = @monthly_rent
+        WHERE property_id = {property_id}
+    """
+
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[
+            bigquery.ScalarQueryParameter("property_id", "INT64", property_id),
+            bigquery.ScalarQueryParameter("name", "STRING", property_input.name),
+            bigquery.ScalarQueryParameter("address", "STRING", property_input.address),
+            bigquery.ScalarQueryParameter("city", "STRING", property_input.city),
+            bigquery.ScalarQueryParameter("state", "STRING", property_input.state),
+            bigquery.ScalarQueryParameter("postal_code", "STRING", property_input.postal_code),
+            bigquery.ScalarQueryParameter("property_type", "STRING", property_input.property_type), 
+            bigquery.ScalarQueryParameter("tenant_name", "STRING", property_input.tenant_name),
+            bigquery.ScalarQueryParameter("monthly_rent", "FLOAT64", property_input.monthly_rent)
+        ]
+    )
+
+    try:
+        results = bq.query(query, job_config=job_config).result()
+        return {
+            "message": "Property information updated successfully",
+            "property_id": property_id,
+            "updated_data": property_input
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database query failed: {str(e)}"
+        )
