@@ -387,7 +387,7 @@ def update_expense_record(expense_id: int, expense_input: ExpenseUpdate,bq: bigq
         results = bq.query(query, job_config=job_config).result()
         return {
             "message": "Expense record updated successfully",
-            "expense_id": expense_input.expense_id,
+            "expense_id": expense_id,
             "updated_data": expense_input
         }
     except Exception as e:
