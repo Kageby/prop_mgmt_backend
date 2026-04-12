@@ -414,7 +414,7 @@ def create_property(property_id: int, property_input: PropertyCreate, bq: bigque
     Create a new property
     """
     query = f"""
-        INSERT INTO `{PROJECT_ID}.{DATASET}.property` (property_id, name, address, city, state, postal_code, property_type, tenant_name, monthly_rent) 
+        INSERT INTO `{PROJECT_ID}.{DATASET}.properties` (property_id, name, address, city, state, postal_code, property_type, tenant_name, monthly_rent) 
         VALUES
         ({property_id}, @name, @address, @city, @state, @postal_code, @property_type, @tenant_name, @monthly_rent) 
     """
@@ -462,7 +462,7 @@ def update_expense_record(property_id: int, property_input: PropertyUpdate,bq: b
     Update the property information
     """
     query = f"""
-        UPDATE `{PROJECT_ID}.{DATASET}.property`
+        UPDATE `{PROJECT_ID}.{DATASET}.properties`
         SET
             name = @name,
             address = @address,
