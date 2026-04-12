@@ -408,7 +408,7 @@ class PropertyCreate(BaseModel):
     tenant_name: str
     monthly_rent: float
 
-@app.post("/property/{property_id}", status_code=201)
+@app.post("/properties/{property_id}", status_code=201)
 def create_property(property_id: int, property_input: PropertyCreate, bq: bigquery.Client = Depends(get_bq_client)):
     """
     Create a new property
@@ -436,13 +436,14 @@ def create_property(property_id: int, property_input: PropertyCreate, bq: bigque
         results = bq.query(query, job_config=job_config).result()
         return {
             "message": "New property created successfully",
-            "income_id": property_id
+            "property_id": property_id
         }
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Database query failed: {str(e)}"
         )
+
 
 # Request body model
 class PropertyUpdate(BaseModel):
@@ -455,7 +456,7 @@ class PropertyUpdate(BaseModel):
     tenant_name: str
     monthly_rent: float
     
-@app.put("/property/{property_id}", status_code=200)
+@app.put("/properties/{property_id}", status_code=200)
 def update_expense_record(property_id: int, property_input: PropertyUpdate,bq: bigquery.Client = Depends(get_bq_client)):
     """
     Update the property information
