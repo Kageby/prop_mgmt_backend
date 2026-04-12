@@ -416,7 +416,7 @@ def create_property(property_id: int, property_input: PropertyCreate, bq: bigque
     query = f"""
         INSERT INTO `{PROJECT_ID}.{DATASET}.properties` (property_id, name, address, city, state, postal_code, property_type, tenant_name, monthly_rent) 
         VALUES
-        ({property_id}, @name, @address, @city, @state, @postal_code, @property_type, @tenant_name, @monthly_rent) 
+        (@property_id, @name, @address, @city, @state, @postal_code, @property_type, @tenant_name, @monthly_rent) 
     """
     job_config = bigquery.QueryJobConfig(
         query_parameters=[
@@ -457,7 +457,7 @@ class PropertyUpdate(BaseModel):
     monthly_rent: float
     
 @app.put("/properties/{property_id}", status_code=200)
-def update_expense_record(property_id: int, property_input: PropertyUpdate,bq: bigquery.Client = Depends(get_bq_client)):
+def update_property_record(property_id: int, property_input: PropertyUpdate,bq: bigquery.Client = Depends(get_bq_client)):
     """
     Update the property information
     """
